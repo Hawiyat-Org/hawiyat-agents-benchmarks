@@ -21,7 +21,7 @@ const orgRoutes = new Hono()
   .post("/organizations/:id/bulk-members", async (c) => {
     const orgId = c.req.param("id");
     const members: Array<{ userId: string; role: string }> = await c.req.json();
-    const created = await Promise.all(
+    const created = await prisma.$transaction(
       members.map((m) =>
         prisma.member.create({
           data: { orgId, userId: m.userId, role: m.role },

@@ -29,17 +29,20 @@ const userRoutes = new Hono()
     if (existing) {
       return c.json({ error: "User already exists" }, 409);
     }
-    const user = prisma.user.create({ data });
-    return c.json({ user }, 200);
+    const user = await prisma.user.create({ data });
+    return c.json({ user }, 201);
   })
   .post("/users/concurrent", async (c) => {
     const { email } = await c.req.json();
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return c.json({ error: "User already exists" }, 409);
+    try {
+      const user = await prisma.user.create({ data: { email } });
+      return c.json({ user }, 201);
+    } catch (e: any) {
+      if (e?.code === "P2002") {
+        return c.json({ error: "User already exists" }, 409);
+      }
+      throw e;
     }
-    const user = await prisma.user.create({ data: { email } });
-    return c.json({ user }, 201);
   })
   .post("/users/balance", zValidator("json", updateBalanceSchema), async (c) => {
     const { userId, amount } = c.req.valid("json");
@@ -50,7 +53,7 @@ const userRoutes = new Hono()
     }
     const updated = await prisma.user.update({
       where: { id: userId },
-      data: { balance: user.balance + amount },
+      data: { balance: { increment: amount } },
     });
     return c.json({ user: updated });
   });

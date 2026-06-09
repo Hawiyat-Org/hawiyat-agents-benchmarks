@@ -4,11 +4,12 @@ import { useDashboard } from "./use-queries.js";
 
 export function useAutoRefreshDashboard() {
   const queryClient = useQueryClient();
-  const { data } = useDashboard();
+  useDashboard();
 
   useEffect(() => {
-    if (data) {
+    const interval = setInterval(() => {
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    }
-  }, [data, queryClient]);
+    }, 30 * 1000);
+    return () => clearInterval(interval);
+  }, [queryClient]);
 }
