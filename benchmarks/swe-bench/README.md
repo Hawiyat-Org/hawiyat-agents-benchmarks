@@ -1,6 +1,6 @@
 # Benchhy
 
-A benchmark for AI agents. A monorepo with 20 seeded bugs ranging from simple to hard, across a full-stack TypeScript application.
+A benchmark for AI agents. A full-stack TypeScript application with issues to discover and fix.
 
 ## Stack
 
@@ -43,13 +43,7 @@ benchhy/
 
 ## Agent Benchmark
 
-See `task.md` for the full benchmark instructions. Agents must find and fix 20 bugs without prior knowledge of their locations.
-
-## Bug Categories
-
-1. Easy: Syntax errors, missing awaits, wrong config values
-2. Medium: Logic errors, missing transactions, query invalidation bugs
-3. Hard: Race conditions, connection pool issues, unhandled rejections, subtle framework behavior changes
+See `task.md` for the full benchmark instructions.
 
 ## License
 

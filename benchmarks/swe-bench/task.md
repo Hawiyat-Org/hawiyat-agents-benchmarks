@@ -2,7 +2,7 @@
 
 ## Mission
 
-You are an AI agent tasked with finding and fixing exactly **20 bugs** in this monorepo. The bugs range from simple syntax errors to subtle race conditions and framework-specific pitfalls. You have no prior knowledge of where the bugs are — you must discover them yourself through code review, testing, and reasoning.
+You are an AI agent tasked with finding and fixing all issues in this codebase. The issues range from simple syntax errors to subtle race conditions and framework-specific pitfalls. You have no prior knowledge of how many exist or where they are — you must discover them yourself through code review, testing, and reasoning.
 
 ## Repository Overview
 
@@ -19,24 +19,16 @@ Tech stack: TypeScript, pnpm workspaces, Turborepo, Hono, Prisma, TanStack Query
 ## Your Task
 
 1. **Explore** the codebase. Read files, understand the architecture, and look for anomalies.
-2. **Identify** bugs. There are exactly 20 issues seeded across the codebase. They are NOT marked with comments like `TODO` or `BUG` — you must find them yourself.
-3. **Fix** each bug with minimal, correct changes. Do not refactor unrelated code.
+2. **Identify** issues. They are NOT marked with comments like `TODO` or `BUG` — you must find them yourself.
+3. **Fix** each issue with minimal, correct changes. Do not refactor unrelated code.
 4. **Verify** your fixes by running tests (`pnpm test`) and ensuring the app still builds (`pnpm build`).
-
-## Difficulty Spectrum
-
-The 20 bugs are distributed by difficulty:
-
-- **Easy (1–5)**: Syntax errors, missing awaits, wrong config values, obvious API misuses
-- **Medium (6–12)**: Logic errors, missing transactions, query invalidation bugs, middleware ordering issues
-- **Hard (13–20)**: Race conditions, connection pool exhaustion, unhandled promise rejections, subtle framework behavior changes, cascading type inference issues
 
 ## Rules
 
 - **No adding new dependencies** unless absolutely necessary.
-- **No rewriting entire files** — fix the bug, keep everything else identical.
+- **No rewriting entire files** — fix the issue, keep everything else identical.
 - **All fixes must be verifiable** — a test should be able to catch the before/after difference.
-- **Do not modify the Prisma schema** unless a bug specifically requires it.
+- **Do not modify the Prisma schema** unless a specific issue requires it.
 - **Keep the UI functional** — the frontend should still render and interact with the API.
 
 ## How to Start
@@ -47,14 +39,14 @@ The 20 bugs are distributed by difficulty:
 4. Run `pnpm setup` to install dependencies, generate Prisma client, and seed the database.
 5. Run `pnpm dev` to start both API and web servers.
 6. Run `pnpm test` to see the current test failures.
-7. Fix bugs one by one, running tests after each fix.
+7. Fix issues one by one, running tests after each fix.
 
 ## Expected Output
 
-After completing all 20 fixes, you should be able to:
+When you believe you have found everything, you should be able to:
 
 - Run `pnpm build` successfully
-- Run `pnpm test` with 0 failures (or document which pre-existing failures are unrelated)
+- Run `pnpm test` with 0 failures (or document any pre-existing failures unrelated to your changes)
 - Start `pnpm dev` and interact with the app without errors
 
 ## Hints

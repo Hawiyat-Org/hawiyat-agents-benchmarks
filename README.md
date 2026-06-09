@@ -6,7 +6,11 @@ Mono-repo of independent AI agent benchmark suites.
 
 | Suite | Description | Location |
 |-------|-------------|----------|
-| `swe-bench` | 20 seeded bugs in a full-stack TypeScript monorepo (TanStack + Hono + Prisma) | [`benchmarks/swe-bench/`](benchmarks/swe-bench/) |
+| `swe-bench` | Full-stack TypeScript monorepo (TanStack + Hono + Prisma) | [`benchmarks/swe-bench/`](benchmarks/swe-bench/) |
+
+## For Agents
+
+Fetch [`AGENTS.md`](./AGENTS.md) and follow the instructions.
 
 ## Adding a New Benchmark
 
