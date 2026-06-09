@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
 import app from "../src/app.js";
-import { prisma } from "@benchhy/db";
-
-let testUserId = "1";
-let testUserId2 = "2";
 
 const testClient = async (url: string, init?: RequestInit) => {
   const headers = new Headers(init?.headers);
