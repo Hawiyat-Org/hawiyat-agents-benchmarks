@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@benchhy/api": ["./src/index.ts"],
+      "@benchhy/api/*": ["./src/*"],
+      "@benchhy/db": ["../../packages/db/src/index.ts"],
+      "@benchhy/shared": ["../../packages/shared/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

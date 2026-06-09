@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@benchhy/db": ["./src/index.ts"],
+      "@benchhy/db/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "prisma/**/*", "scripts/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

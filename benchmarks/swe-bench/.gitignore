@@ -1,0 +1,11 @@
+node_modules
+dist
+.output
+*.db
+*.db-journal
+.env.local
+.DS_Store
+*.log
+.vite
+*.tsbuildinfo
+*.md

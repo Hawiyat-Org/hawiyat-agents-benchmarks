@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "paths": {
+      "@benchhy/web": ["./src/index.ts"],
+      "@benchhy/web/*": ["./src/*"],
+      "@benchhy/db": ["../../packages/db/src/index.ts"],
+      "@benchhy/shared": ["../../packages/shared/src/index.ts"],
+      "@benchhy/ui": ["../../packages/ui/src/index.ts"],
+      "@benchhy/api": ["../api/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "app.config.ts", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", ".output"]
+}
