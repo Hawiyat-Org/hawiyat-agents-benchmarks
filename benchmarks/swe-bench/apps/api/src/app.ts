@@ -13,7 +13,6 @@ import { transferRoutes } from "./routes/transfer.js";
 import { clientRoutes } from "./routes/client-test.js";
 import { adminRoutes } from "./routes/admin.js";
 import { publicRoutes } from "./routes/public.js";
-import { authMiddleware } from "./middleware/auth.js";
 import { errorHandler } from "./middleware/error.js";
 
 const app = new Hono()
@@ -36,9 +35,7 @@ app.route("/api/v1", analyticsRoutes);
 app.route("/api/v1", transferRoutes);
 app.route("/api/v1", clientRoutes);
 
-app.on(["GET", "POST"], "/api/auth/**", (c) => c.json({ auth: true }));
-
-app.use(authMiddleware);
+app.on(["GET", "POST"], "/api/auth/*", (c) => c.json({ auth: true }));
 
 app.onError((err, c) => {
   console.error(err);

@@ -2,8 +2,7 @@ import { Hono } from "hono";
 import { authMiddleware } from "../middleware/auth.js";
 
 const adminRoutes = new Hono()
-  .use(authMiddleware)
-  .get("/admin/stats", (c) => {
+  .get("/admin/stats", authMiddleware, (c) => {
     return c.json({ stats: "admin data" });
   });
 

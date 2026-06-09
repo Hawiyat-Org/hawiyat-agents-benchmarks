@@ -23,8 +23,10 @@ const orgRoutes = new Hono()
     const members: Array<{ userId: string; role: string }> = await c.req.json();
     const created = await Promise.all(
       members.map((m) =>
-        prisma.member.create({
-          data: { orgId, userId: m.userId, role: m.role },
+        prisma.member.upsert({
+          where: { orgId_userId: { orgId, userId: m.userId } },
+          update: { role: m.role },
+          create: { orgId, userId: m.userId, role: m.role },
         })
       )
     );

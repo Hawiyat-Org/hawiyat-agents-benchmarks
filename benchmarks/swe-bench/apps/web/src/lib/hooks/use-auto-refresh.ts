@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDashboard } from "./use-queries.js";
 
 export function useAutoRefreshDashboard() {
   const queryClient = useQueryClient();
-  const { data } = useDashboard();
+  const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
   useEffect(() => {
-    if (data) {
+    intervalRef.current = setInterval(() => {
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    }
-  }, [data, queryClient]);
+    }, 30000);
+    return () => clearInterval(intervalRef.current);
+  }, [queryClient]);
 }
