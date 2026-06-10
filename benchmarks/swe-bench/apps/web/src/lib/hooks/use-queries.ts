@@ -1,7 +1,5 @@
-import { QueryClient, useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { client } from "./api-client.js";
-
-const queryClient = new QueryClient();
 
 export function useBenchmarks() {
   return useQuery({
@@ -10,9 +8,6 @@ export function useBenchmarks() {
       const res = await client.api.v1.benchmarks.$get();
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
   });
 }
@@ -51,13 +46,13 @@ export function useCreatePost() {
       return res.json();
     },
     onMutate: async (newPost) => {
-      queryClient.setQueryData(["posts"], (old: any) => {
+      queryClient.setQueryData(["posts", { status: "published" }], (old: any) => {
         if (!old) return old;
         return { posts: [...old.posts, { ...newPost, id: "temp", createdAt: new Date().toISOString() }] };
       });
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"], exact: true });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 }
@@ -71,6 +66,7 @@ export function useInfinitePosts() {
       return res.json();
     },
     getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.posts.length < 10) return undefined;
       return allPages.length + 1;
     },
     initialPageParam: 1,

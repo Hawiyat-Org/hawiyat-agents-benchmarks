@@ -20,7 +20,9 @@ const orderRoutes = new Hono()
     const user = await prisma.user.findUnique({ where: { id: data.userId } });
     if (!user) return c.json({ error: "User not found" }, 404);
     const order = await prisma.order.create({ data });
-    sendConfirmationEmail(user.email, order.id);
+    sendConfirmationEmail(user.email, order.id).catch((err) => {
+      console.error("Failed to send confirmation email:", err);
+    });
     return c.json({ order }, 201);
   });
 

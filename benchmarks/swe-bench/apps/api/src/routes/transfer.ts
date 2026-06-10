@@ -8,14 +8,15 @@ const transferRoutes = new Hono()
     if (!fromUser || fromUser.balance < amount) {
       return c.json({ error: "Insufficient funds" }, 400);
     }
-    await prisma.user.update({
-      where: { id: fromUserId },
-      data: { balance: fromUser.balance - amount },
-    });
-    const toUser = await prisma.user.findUnique({ where: { id: toUserId } });
-    await prisma.user.update({
-      where: { id: toUserId },
-      data: { balance: (toUser?.balance ?? 0) + amount },
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: fromUserId },
+        data: { balance: { decrement: amount } },
+      });
+      await tx.user.update({
+        where: { id: toUserId },
+        data: { balance: { increment: amount } },
+      });
     });
     return c.json({ success: true });
   });
