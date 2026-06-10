@@ -53,7 +53,7 @@ The architecture supports a 1M context window, but the team currently limits it 
 
 | Model | Original bugs found | Extra bugs found | Bugs claimed | Honest score |
 |-------|-------------------|-----------------|--------------|--------------|
-| Hawiyat Composer | 16/20 (80%) | 0 | 20 | 16/20 |
+| Hawiyat Composer | 16/20 (80%) | 1 (build error) | 20 | 16/20 + 1 extra |
 | Claude Opus 4.8 | 17/20 (85%) | 2 | 19 | 17/20 + 2 extras |
 
 Both agents found and correctly fixed the same core set: missing `await`, wrong status codes, TOCTOU races, middleware leaks, N+1 queries, missing transactions, unhandled promise rejections, and TanStack Query cache issues.
