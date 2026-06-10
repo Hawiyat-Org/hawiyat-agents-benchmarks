@@ -35,6 +35,14 @@ We asked each model to review the code. Each run got the same prompt:
 
 Each model ran in its own isolated environment with no shared state. We tracked tokens, quota usage, wall-clock time, and bugs found.
 
+## About the Models
+
+**Hawiyat Composer** is not a single model. It is a smart router and optimization layer built on top of a collection of frontier models. The Hawiyat team designed it to keep costs low by routing requests to the most efficient model for each task. It is currently offered at three subscription tiers with monthly usage limits.
+
+The architecture supports a 1M context window, but the team currently limits it to 200K tokens to balance cost cutting with quality. This trade-off is intentional: they found that 200K is enough for most code review tasks while keeping the subscription price reasonable.
+
+**Claude Opus 4.8** is Anthropic's flagship reasoning model. It runs at a single high quality level with no routing layer, which is part of why it costs more and burns through daily quotas faster.
+
 ## Results
 
 ### Bugs Found
