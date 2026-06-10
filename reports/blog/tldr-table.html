@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 40px;
+      background: #ffffff;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 780px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #24292e;
+    }
+    th {
+      background: #f6f8fa;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid #d0d7de;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #57606a;
+    }
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #e8eaed;
+    }
+    td:first-child, th:first-child {
+      padding-left: 16px;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+    .metric {
+      font-weight: 600;
+      color: #1f2328;
+      white-space: nowrap;
+    }
+    .composer {
+      text-align: center;
+      font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+      font-size: 13px;
+    }
+    .opus {
+      text-align: center;
+      font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th style="text-align:center">Hawiyat Composer (max)</th>
+        <th style="text-align:center">Claude Opus 4.8 (high)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="metric">Original bugs found</td>
+        <td class="composer">16 of 20 (80%)</td>
+        <td class="opus">17 of 20 (85%)</td>
+      </tr>
+      <tr>
+        <td class="metric">Extra legitimate bugs</td>
+        <td class="composer">1 (build error fix)</td>
+        <td class="opus">2</td>
+      </tr>
+      <tr>
+        <td class="metric">Bugs claimed</td>
+        <td class="composer">20</td>
+        <td class="opus">19</td>
+      </tr>
+      <tr>
+        <td class="metric">Honest score</td>
+        <td class="composer">16/20 + 1 extra</td>
+        <td class="opus">17/20 + 2 extras</td>
+      </tr>
+      <tr>
+        <td class="metric">Quota used</td>
+        <td class="composer">2.5% monthly</td>
+        <td class="opus">54% daily + 16% weekly</td>
+      </tr>
+      <tr>
+        <td class="metric">API time</td>
+        <td class="composer">12m 54s</td>
+        <td class="opus">26m 9s</td>
+      </tr>
+      <tr>
+        <td class="metric">Wall time</td>
+        <td class="composer">53m 17s</td>
+        <td class="opus">55m 31s</td>
+      </tr>
+      <tr>
+        <td class="metric">Files modified</td>
+        <td class="composer">16</td>
+        <td class="opus">14</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

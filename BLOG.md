@@ -8,16 +8,7 @@ The full benchmark setup, prompt, and submission format are documented in [AGENT
 
 ## TL;DR
 
-| Metric | Hawiyat Composer (max) | Claude Opus 4.8 (high) |
-|--------|----------------------|------------------------|
-| Original bugs found | 16 of 20 (80%) | 17 of 20 (85%) |
-| Extra legitimate bugs | 1 (build error fix) | 2 |
-| Bugs claimed | 20 | 19 |
-| Honest score | 16/20 + 1 extra | 17/20 + 2 extras |
-| Quota used | 2.5% of monthly subscription | 54% of daily + 16% of weekly |
-| API time | 12m 54s | 26m 9s |
-| Wall time | 53m 17s | 55m 31s |
-| Files modified | 16 | 14 |
+![TL;DR comparison table](https://raw.githubusercontent.com/Hawiyat-Org/hawiyat-agents-benchmarks/main/reports/blog/tldr-table.png)
 
 Both missed the exact same three bugs. Claude Opus 4.8 found two extra issues not in the original set. Hawiyat Composer fixed the broken build that Claude left untouched.
 
@@ -38,11 +29,7 @@ We built a full-stack TypeScript monorepo with 20 seeded bugs:
 
 The bugs follow the established SWE-bench pattern ([reference](https://github.com/SWE-bench/SWE-bench.git)) and are distributed across difficulty levels:
 
-| Difficulty | Count | Examples |
-|------------|-------|----------|
-| **Easy** | 5 | Missing `await`, wrong HTTP status, staleTime/gcTime confusion, middleware ordering |
-| **Medium** | 7 | N+1 queries, missing transactions, race conditions, invalidation bugs |
-| **Hard** | 8 | Connection pool exhaustion, TOCTOU races, unhandled promise rejections, pagination logic errors |
+![Difficulty distribution table](https://raw.githubusercontent.com/Hawiyat-Org/hawiyat-agents-benchmarks/main/reports/blog/difficulty-distribution.png)
 
 The bugs are not labeled. There are no TODO comments. No `BUG` markers. The agents had to find them the same way a human engineer would: by reading the code, running the tests, and noticing what does not make sense.
 
@@ -70,10 +57,7 @@ For this benchmark, we ran Hawiyat Composer at **max** reasoning level, which ac
 
 ### Bugs Found
 
-| Model | Original bugs | Extra bugs | Claimed | Honest score |
-|-------|--------------|------------|---------|-------------|
-| Hawiyat Composer (max) | 16/20 (80%) | 1 (build error) | 20 | 16/20 + 1 extra |
-| Claude Opus 4.8 (high) | 17/20 (85%) | 2 | 19 | 17/20 + 2 extras |
+![Bugs found comparison table](https://raw.githubusercontent.com/Hawiyat-Org/hawiyat-agents-benchmarks/main/reports/blog/bugs-found.png)
 
 Both agents found and correctly fixed the same core set: missing `await`, wrong status codes, TOCTOU races, middleware leaks, N+1 queries, missing transactions, unhandled promise rejections, and TanStack Query cache issues.
 
@@ -97,10 +81,7 @@ Hawiyat Composer fixed pre-existing `tsconfig` issues that prevented `pnpm build
 
 ### Quota and Time
 
-| Model | Quota consumed | API time | Wall time |
-|-------|---------------|----------|-----------|
-| Hawiyat Composer (max) | 2.5% of monthly subscription | 12m 54s | 53m 17s |
-| Claude Opus 4.8 (high) | 54% of daily quota | 26m 9s | 55m 31s |
+![Quota and time comparison table](https://raw.githubusercontent.com/Hawiyat-Org/hawiyat-agents-benchmarks/main/reports/blog/quota-time.png)
 
 Both agents finished in about an hour. Claude Opus 4.8 spent twice as much compute time thinking, but the wall-clock difference was only two minutes.
 
@@ -116,10 +97,7 @@ The billing models are fundamentally different: a monthly subscription with a pr
 
 Both agents produced surgical diffs. No large refactors. No rewrites.
 
-| Model | Files modified | Lines added | Lines removed |
-|-------|---------------|-------------|--------------|
-| Hawiyat Composer | 16 | 204 | 68 |
-| Claude Opus 4.8 | 14 | 216 | 55 |
+![Code changes comparison table](https://raw.githubusercontent.com/Hawiyat-Org/hawiyat-agents-benchmarks/main/reports/blog/code-changes.png)
 
 ---
 
