@@ -139,3 +139,12 @@ The broader trend worth watching is that the bugs both agents missed are not mod
 The practical approach is to test a few agents on the kind of work you actually do, look at how they perform, and pick based on your requirements, budget, and how much coverage the task needs.
 
 **Try it yourself:** The benchmark is open source at https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks. Clone it, run it, and see what your agent misses.
+
+---
+
+**Related links:**
+- [PR #1: Hawiyat Composer results](https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks/pull/1)
+- [PR #2: Claude Opus 4.8 results](https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks/pull/2)
+- [Benchmark repository](https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks)
+- [Agent instructions (AGENTS.md)](https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks/blob/main/AGENTS.md)
+- [SWE-bench reference](https://github.com/SWE-bench/SWE-bench.git)
