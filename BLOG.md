@@ -1,10 +1,14 @@
-We Benchmarked the Same Codebase with Hawiyat Composer and Claude Opus 4.8
+We audited the Same Codebase with Hawiyat Composer and Claude Opus 4.8
 
-Hawiyat Composer is a specialized AI agent built for software engineering tasks. Claude Opus 4.8 is Anthropic's flagship reasoning model. The two sit at very different price points and quota structures, and we wanted to see how they perform head-to-head.
+Our task is Benchmarking our llms with the same harness layer by auditing the Same Codebase with Hawiyat Composer (max) and Claude Opus 4.8 (high)
+
+Hawiyat Composer is a specialized AI agent built for software engineering tasks by [https://hawiya.org](https://hawiya.org). Claude Opus 4.8 is Anthropic's flagship reasoning model by [https://claude.ai](https://claude.ai). The two sit at very different price points and quota structures, and we wanted to see how they perform head-to-head.
 
 We gave both the same task: find and fix all bugs in a real codebase. No hints. No map. Just the code and a test suite that flickered with failures.
 
-**TL;DR:** Hawiyat Composer found 16 of 20 bugs using 3% of its monthly Pro subscription. Claude Opus 4.8 found 17 of 20 bugs using 40% of its daily quota. Both missed the exact same 3 bugs. Claude Opus 4.8 found 2 extra legitimate bugs not in the original set, but Hawiyat Composer fixed the broken build that Claude left untouched.
+The exact benchmark prompt and instructions and layout can be found in [AGENTS.md](https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks/blob/main/AGENTS.md)
+
+**TL;DR:** Hawiyat Composer found 16 of 20 bugs using 2.5% of its monthly Pro subscription. Claude Opus 4.8 found 17 of 20 bugs using 54% of its daily quota and 16% of weekly subscription. Both missed the exact same 3 bugs. Claude Opus 4.8 found 2 extra legitimate bugs not in the original set, but Hawiyat Composer fixed the broken build that Claude left untouched.
 
 The real surprise was not which agent won. It was that the bugs they missed were the same ones.
 
@@ -18,6 +22,7 @@ The codebase is a full-stack TypeScript monorepo:
 - **Monorepo:** pnpm workspaces + Turborepo
 
 We seeded 20 bugs across three difficulty levels:
+- the bugs followed the leading ai agents benchmark in SWE tasks [https://github.com/SWE-bench/SWE-bench.git](https://github.com/SWE-bench/SWE-bench.git)
 - **Easy:** missing `await`, wrong HTTP status, staleTime/gcTime confusion, middleware ordering
 - **Medium:** N+1 queries, missing transactions, race conditions, invalidation bugs
 - **Hard:** connection pool exhaustion, TOCTOU races, unhandled promise rejections, pagination logic errors
@@ -61,8 +66,8 @@ Hawiyat Composer fixed the pre-existing `tsconfig` issues that prevented `pnpm b
 
 | Model | Quota used | API time | Wall time |
 |-------|-----------|----------|-----------|
-| Hawiyat Composer | 3% of monthly subscription | 12m 54s | 53m 17s |
-| Claude Opus 4.8 | 40% of daily quota | 26m 9s | 55m 31s |
+| Hawiyat Composer | 2.5% of monthly subscription | 12m 54s | 53m 17s |
+| Claude Opus 4.8 | 54% of daily quota | 26m 9s | 55m 31s |
 
 Both agents took about an hour. Claude Opus 4.8 spent twice as much API time thinking, but the wall-clock difference was only two minutes.
 
@@ -93,9 +98,9 @@ It did not fix the pre-existing `tsconfig` build failures. Hawiyat Composer did.
 
 ## Quota Efficiency
 
-Hawiyat Composer used 3% of its monthly subscription for 16 bugs. That means roughly 33 full benchmark runs per month on a single subscription.
+Hawiyat Composer used 2.5% of its monthly subscription for 16 bugs. That means roughly 33 full bechmark runs per month on a single subscription.
 
-Claude Opus 4.8 used 40% of its daily quota for 17 bugs. That means roughly 2.5 full benchmark runs per day before hitting the cap.
+Claude Opus 4.8 used 54% of its daily quota for 17 bugs. That means roughly 2.5 full benchmark runs per day before hitting the cap.
 
 The billing models are different: monthly subscription vs. daily usage limits. If you need to run many benchmarks, the monthly subscription is more predictable. If you need one deep audit, the daily quota is fine.
 
@@ -119,13 +124,13 @@ This is one benchmark, one run each. We did not run statistical significance tes
 
 Hawiyat Composer's 20 claimed bugs included fixes that were not in our original 20. Whether this counts as over-claiming depends on whether you count only the bugs we planted or every fixable issue in the codebase. We counted only the planted bugs for scoring.
 
-Claude Opus 4.8's 40% daily quota usage means a single benchmark consumed nearly half a day's allocation. Your mileage may vary depending on your plan.
+Claude Opus 4.8's 54% daily quota usage means a single benchmark consumed nearly half a day's allocation. Your mileage may vary depending on your plan.
 
 ## Conclusion
 
 The choice here is less about which model is better and more about matching the run to the job.
 
-For high-volume or low-cost screening, Hawiyat Composer is the value pick. It found 16 of 20 bugs for 3% of a monthly subscription and finished in under an hour. It caught most of the serious problems, including the N+1 query and the middleware leak that the cheaper Claude Opus 4.8 runs also missed.
+For high-volume or low-cost screening, Hawiyat Composer is the value pick. It found 16 of 20 bugs for 2.5% of a monthly subscription and finished in under an hour. It caught most of the serious problems, including the N+1 query and the middleware leak that the cheaper Claude Opus 4.8 runs also missed.
 
 For a more thorough single pass, Claude Opus 4.8 at its default setting produced the best report. It surfaced 17 of 20 original bugs plus 2 extra legitimate issues, and it was the only run to catch the RPC client double-prefix and the missing AppType export.
 
