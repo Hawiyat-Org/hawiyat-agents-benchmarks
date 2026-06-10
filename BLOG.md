@@ -2,6 +2,8 @@ We audited the Same Codebase with Hawiyat Composer and Claude Opus 4.8
 
 Our task is Benchmarking our llms with the same harness layer by auditing the Same Codebase with Hawiyat Composer (max) and Claude Opus 4.8 (high)
 
+We used **Claude Code** as the harness layer — the orchestration tool that runs the agents and manages the benchmark environment. The actual models under test were Hawiyat Composer (at its max reasoning level) and Claude Opus 4.8 (at its high reasoning level).
+
 Hawiyat Composer is a specialized AI agent built for software engineering tasks by [https://hawiya.org](https://hawiya.org). Claude Opus 4.8 is Anthropic's flagship reasoning model by [https://claude.ai](https://claude.ai). The two sit at very different price points and quota structures, and we wanted to see how they perform head-to-head.
 
 We gave both the same task: find and fix all bugs in a real codebase. No hints. No map. Just the code and a test suite that flickered with failures.
@@ -33,7 +35,7 @@ We asked each model to review the code. Each run got the same prompt:
 
 > Clone this repo, follow AGENTS.md, and submit your fixes as a PR with your model name in the title.
 
-Each model ran in its own isolated environment with no shared state. We tracked tokens, quota usage, wall-clock time, and bugs found.
+Each model ran in its own isolated environment with no shared state, orchestrated by Claude Code as the harness layer. We tracked tokens, quota usage, wall-clock time, and bugs found.
 
 ## About the Models
 
@@ -41,7 +43,9 @@ Each model ran in its own isolated environment with no shared state. We tracked 
 
 The architecture supports a 1M context window, but the team currently limits it to 200K tokens to balance cost cutting with quality. This trade-off is intentional: they found that 200K is enough for most code review tasks while keeping the subscription price reasonable.
 
-**Claude Opus 4.8** is Anthropic's flagship reasoning model. It runs at a single high quality level with no routing layer, which is part of why it costs more and burns through daily quotas faster.
+**Claude Opus 4.8** is Anthropic's flagship reasoning model. For this benchmark, we ran it at the **high** reasoning level. It runs as a single model with no routing layer, which is part of why it costs more and burns through daily quotas faster than Hawiyat Composer.
+
+**Hawiyat Composer** was run at the **max** reasoning level for this benchmark. At max, it uses its full smart routing pipeline and the largest available context window.
 
 ## Results
 
@@ -90,13 +94,13 @@ Both produced minimal, focused diffs. No large refactors. No rewrites. The fixes
 
 ## What Each Run Found
 
-### Hawiyat Composer
+### Hawiyat Composer (max)
 
 Found the major blockers and most of the hard bugs. Caught the missing `await`, the TOCTOU race, the auth middleware leak, the N+1 query, the missing transaction, the unhandled promise rejection, the TanStack Query cache issues, and the pagination logic error.
 
 It claimed 20 bugs but padded the count with 4 extra fixes that were not in our original set. The honest score was 16/20.
 
-### Claude Opus 4.8
+### Claude Opus 4.8 (high)
 
 Found the same major blockers plus one more original bug (the `useInfiniteQuery` termination logic). It also discovered two legitimate extra bugs not in our original 20.
 
@@ -138,9 +142,9 @@ Claude Opus 4.8's 54% daily quota usage means a single benchmark consumed nearly
 
 The choice here is less about which model is better and more about matching the run to the job.
 
-For high-volume or low-cost screening, Hawiyat Composer is the value pick. It found 16 of 20 bugs for 2.5% of a monthly subscription and finished in under an hour. It caught most of the serious problems, including the N+1 query and the middleware leak that the cheaper Claude Opus 4.8 runs also missed.
+For high-volume or low-cost screening, Hawiyat Composer at max is the value pick. It found 16 of 20 bugs for 2.5% of a monthly subscription and finished in under an hour. It caught most of the serious problems, including the N+1 query and the middleware leak that the cheaper Claude Opus 4.8 runs also missed.
 
-For a more thorough single pass, Claude Opus 4.8 at its default setting produced the best report. It surfaced 17 of 20 original bugs plus 2 extra legitimate issues, and it was the only run to catch the RPC client double-prefix and the missing AppType export.
+For a more thorough single pass, Claude Opus 4.8 at high produced the best report. It surfaced 17 of 20 original bugs plus 2 extra legitimate issues, and it was the only run to catch the RPC client double-prefix and the missing AppType export.
 
 The broader trend worth watching is that the bugs both agents missed are not model-specific. They are pattern-specific. They are the kinds of bugs that slip through any automated review, whether the reviewer is a neural network or a human engineer who has not slept enough.
 
