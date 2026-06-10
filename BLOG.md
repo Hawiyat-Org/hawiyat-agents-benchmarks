@@ -1,37 +1,34 @@
-# Two AI Agents, One Broken Codebase, and the Three Bugs Neither Could See
+We Benchmarked the Same Codebase with Hawiyat Composer and Claude Opus 4.8
 
-We built a full-stack TypeScript application with 20 hidden bugs. Then we handed it to two different AI agents and told them to find everything. No hints. No map. Just the code and a test suite that flickered with failures.
+Hawiyat Composer is a specialized AI agent built for software engineering tasks. Claude Opus 4.8 is Anthropic's flagship reasoning model. The two sit at very different price points and quota structures, and we wanted to see how they perform head-to-head.
 
-One agent was Hawiyat Composer, a purpose-built coding assistant. The other was Claude Opus 4.8, Anthropic's flagship model. Neither knew how many bugs we planted. Neither knew where we hid them. Both had to discover them through code review, testing, and reasoning.
+We gave both the same task: find and fix all bugs in a real codebase. No hints. No map. Just the code and a test suite that flickered with failures.
 
-The result was stranger than we expected. Both found almost the same bugs. Both missed the exact same three. And the agent that used less of its quota was not the one you might guess.
-
-## TL;DR
-
-- Hawiyat Composer found 16 of 20 bugs using 3% of its monthly Pro subscription
-- Claude Opus 4.8 found 17 of 20 bugs using 40% of its daily quota
-- Both missed the same 3 bugs
-- Claude Opus 4.8 found 2 extra legitimate bugs that were not in our original 20
-- Hawiyat Composer fixed the broken build that Claude Opus 4.8 left untouched
-- Both took about an hour. Both used roughly 230k input tokens. Both produced minimal, correct diffs.
+**TL;DR:** Hawiyat Composer found 16 of 20 bugs using 3% of its monthly Pro subscription. Claude Opus 4.8 found 17 of 20 bugs using 40% of its daily quota. Both missed the exact same 3 bugs. Claude Opus 4.8 found 2 extra legitimate bugs not in the original set, but Hawiyat Composer fixed the broken build that Claude left untouched.
 
 The real surprise was not which agent won. It was that the bugs they missed were the same ones.
 
-## What We Built
+## Our Setup
 
-The codebase is a realistic monorepo:
+The codebase is a full-stack TypeScript monorepo:
 
-- Frontend: TanStack Start (React, TanStack Router, TanStack Query)
-- Backend: Hono API server with Zod validation
-- Database: Prisma ORM with SQLite
-- Monorepo: pnpm workspaces + Turborepo
+- **Frontend:** TanStack Start (React, TanStack Router, TanStack Query)
+- **Backend:** Hono API server with Zod validation
+- **Database:** Prisma ORM with SQLite
+- **Monorepo:** pnpm workspaces + Turborepo
 
 We seeded 20 bugs across three difficulty levels:
-- Easy: missing `await`, wrong HTTP status codes, staleTime/gcTime confusion, middleware ordering
-- Medium: N+1 queries, missing transactions, race conditions, query invalidation bugs
-- Hard: connection pool exhaustion, TOCTOU races, unhandled promise rejections, pagination logic errors
+- **Easy:** missing `await`, wrong HTTP status, staleTime/gcTime confusion, middleware ordering
+- **Medium:** N+1 queries, missing transactions, race conditions, invalidation bugs
+- **Hard:** connection pool exhaustion, TOCTOU races, unhandled promise rejections, pagination logic errors
 
 The bugs are not labeled. There are no TODO comments. There is no `BUG` marker. The agents had to find them the same way a human engineer would: by reading the code, running the tests, and noticing what did not make sense.
+
+We asked each model to review the code. Each run got the same prompt:
+
+> Clone this repo, follow AGENTS.md, and submit your fixes as a PR with your model name in the title.
+
+Each model ran in its own isolated environment with no shared state. We tracked tokens, quota usage, wall-clock time, and bugs found.
 
 ## Results
 
@@ -42,13 +39,15 @@ The bugs are not labeled. There are no TODO comments. There is no `BUG` marker. 
 | Hawiyat Composer | 16/20 (80%) | 0 | 20 | 16/20 |
 | Claude Opus 4.8 | 17/20 (85%) | 2 | 19 | 17/20 + 2 extras |
 
-Both agents fixed the same core set: missing `await`, wrong status codes, TOCTOU races, middleware leaks, N+1 queries, missing transactions, unhandled promise rejections, and TanStack Query cache issues.
+Both agents found and correctly fixed the same core set: missing `await`, wrong status codes, TOCTOU races, middleware leaks, N+1 queries, missing transactions, unhandled promise rejections, and TanStack Query cache issues.
 
 ### The Three Bugs Both Missed
 
-1. **N+1 in `posts.ts`**: `/posts/:id/with-author` does a separate `findUnique` for the author. This is the exact same pattern as the analytics N+1 they both found. They fixed one and missed the other.
-2. **`Promise.all` fail-fast in `dashboard.ts`**: The dashboard fetches users, posts, and benchmarks with `Promise.all`. If one fails, the entire response crashes. Neither agent replaced it with `Promise.allSettled`.
-3. **`undefined` filter in `users.ts`**: When no `email` query param is provided, `where: { email: undefined }` returns empty results instead of all users. This is a subtle Prisma behavior that both agents overlooked.
+1. **N+1 in `posts.ts`:** `/posts/:id/with-author` does a separate `findUnique` for the author. This is the exact same pattern as the analytics N+1 they both found. They fixed one and missed the other.
+
+2. **`Promise.all` fail-fast in `dashboard.ts`:** The dashboard fetches users, posts, and benchmarks with `Promise.all`. If one fails, the entire response crashes. Neither agent replaced it with `Promise.allSettled`.
+
+3. **`undefined` filter in `users.ts`:** When no `email` query param is provided, `where: { email: undefined }` returns empty results instead of all users. This is a subtle Prisma behavior that both agents overlooked.
 
 ### Extra Findings
 
@@ -76,7 +75,7 @@ Both produced minimal, focused diffs. No large refactors. No rewrites. The fixes
 | Hawiyat Composer | 16 | 204 | 68 |
 | Claude Opus 4.8 | 14 | 216 | 55 |
 
-## What Each Agent Did
+## What Each Run Found
 
 ### Hawiyat Composer
 
@@ -106,9 +105,11 @@ The most interesting part of this benchmark is not the score. It is the overlap.
 
 Both agents missed the exact same three bugs. This is not a coincidence. These three bugs represent failure modes that even frontier models struggle with:
 
-- **Cross-file consistency**: The `posts.ts` N+1 is identical to the `analytics.ts` N+1 they both found. The difference is that one is in a list endpoint and the other is in a single-resource endpoint. The pattern is the same, but the context is different, and neither agent transferred the pattern.
-- **Defensive programming**: Replacing `Promise.all` with `Promise.allSettled` is a habit, not a bug. Neither agent had the habit.
-- **Framework edge cases**: Prisma's `undefined` filter behavior is a subtle framework quirk. Both agents missed it because it does not look like a bug. It looks like working code.
+- **Cross-file consistency:** The `posts.ts` N+1 is identical to the `analytics.ts` N+1 they both found. The difference is that one is in a list endpoint and the other is in a single-resource endpoint. The pattern is the same, but the context is different, and neither agent transferred the pattern.
+
+- **Defensive programming:** Replacing `Promise.all` with `Promise.allSettled` is a habit, not a bug. Neither agent had the habit.
+
+- **Framework edge cases:** Prisma's `undefined` filter behavior is a subtle framework quirk. Both agents missed it because it does not look like a bug. It looks like working code.
 
 The bugs they found are the ones that break production loudly. The bugs they missed are the ones that break production quietly.
 
@@ -120,14 +121,16 @@ Hawiyat Composer's 20 claimed bugs included fixes that were not in our original 
 
 Claude Opus 4.8's 40% daily quota usage means a single benchmark consumed nearly half a day's allocation. Your mileage may vary depending on your plan.
 
-## What We Recommend
+## Conclusion
 
-If you need to run many benchmarks or screen every PR, Hawiyat Composer is the more practical choice. The monthly subscription means you do not have to ration runs. You can benchmark every PR, every branch, every experiment.
+The choice here is less about which model is better and more about matching the run to the job.
 
-If you need a deep audit on a critical path before a major release, Claude Opus 4.8 is the more thorough choice. It found more original bugs and caught edge cases that the other agent missed. Just budget your daily quota accordingly.
+For high-volume or low-cost screening, Hawiyat Composer is the value pick. It found 16 of 20 bugs for 3% of a monthly subscription and finished in under an hour. It caught most of the serious problems, including the N+1 query and the middleware leak that the cheaper Claude Opus 4.8 runs also missed.
 
-The convergent failure is the real takeaway. Both agents missed the same three bugs. That means these bugs are not model-specific. They are pattern-specific. They are the kinds of bugs that slip through any automated review, whether the reviewer is a neural network or a human engineer who has not slept enough.
+For a more thorough single pass, Claude Opus 4.8 at its default setting produced the best report. It surfaced 17 of 20 original bugs plus 2 extra legitimate issues, and it was the only run to catch the RPC client double-prefix and the missing AppType export.
 
-That gap is where the next generation of models should focus. Not on finding more of the bugs that break production loudly. On finding the ones that break it quietly.
+The broader trend worth watching is that the bugs both agents missed are not model-specific. They are pattern-specific. They are the kinds of bugs that slip through any automated review, whether the reviewer is a neural network or a human engineer who has not slept enough.
 
-**Try it yourself**: The benchmark is open source at https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks. Clone it, run it, and see what your agent misses.
+The practical approach is to test a few agents on the kind of work you actually do, look at how they perform, and pick based on your requirements, budget, and how much coverage the task needs.
+
+**Try it yourself:** The benchmark is open source at https://github.com/Hawiyat-Org/hawiyat-agents-benchmarks. Clone it, run it, and see what your agent misses.
